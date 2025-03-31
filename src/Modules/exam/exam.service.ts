@@ -9,7 +9,6 @@ const createOne = async (payload: {
   student: string;
   questionPapper: string;
 }) => {
-  
   const student: tStudent | null = await studentModel.findById(
     new mongoose.Types.ObjectId(payload.student)
   );
@@ -26,7 +25,7 @@ const createOne = async (payload: {
   return result;
 };
 
-const findOne = (slug: string) => {
+const findOne = async (slug: string) => {
   const result = examModel
     .findOne({ slug })
     .populate("student")
@@ -34,6 +33,14 @@ const findOne = (slug: string) => {
   return result;
 };
 
-const examService = { createOne, findOne };
+const findAll = async () => {
+  const result = await examModel
+    .find()
+    .populate("student")
+    .populate("questionPapper");
+  return result;
+};
+
+const examService = { createOne, findOne, findAll };
 
 export default examService;

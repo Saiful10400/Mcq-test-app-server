@@ -17,7 +17,7 @@ const createExam = catchAsync(async (req: Request, res: Response) => {
   }); 
 
 
-// find all questionPappers
+ 
 const findAExam = catchAsync(async (req: Request, res: Response) => {
     const data = await examService.findOne(req.params.slug);
     sendResponse(res, {
@@ -27,7 +27,19 @@ const findAExam = catchAsync(async (req: Request, res: Response) => {
       message: "a exma retrieved.",
     });
   });
+ 
 
-  const examController={createExam,findAExam}
+
+const findAllExam = catchAsync(async (req: Request, res: Response) => {
+    const data = await examService.findAll();
+    sendResponse(res, {
+      data,
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "all exam retrieved.",
+    });
+  });
+
+  const examController={createExam,findAExam,findAllExam}
 
   export default examController
