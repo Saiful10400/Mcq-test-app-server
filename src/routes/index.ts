@@ -1,5 +1,8 @@
 import { Router } from "express"
-import { productRouter } from "../Modules/product/shop.routes"
+import questionPapperRoute from "../Modules/question/question.routes"
+import exmaRoute from "../Modules/exam/exam.routes"
+import authRouter from "../Modules/auth/auth.routes"
+ 
 
 
 const routes=Router()
@@ -8,8 +11,16 @@ const routes=Router()
 const moduleRoutes=[
 
     {
-        path:"/shop",
-        route:productRouter
+        path:"/question-papper",
+        route:questionPapperRoute
+    },
+    {
+        path:"/exam",
+        route:exmaRoute
+    },
+    {
+        path:"/auth",
+        route:authRouter
     }
 ]
 
