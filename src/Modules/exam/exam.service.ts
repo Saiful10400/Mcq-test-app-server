@@ -4,6 +4,7 @@ import { tStudent } from "../auth/auth.types";
 import questionPappersModel from "../question/question.model";
 import { tQuestionPapper } from "../question/question.types";
 import examModel from "./exam.model";
+import resultModel from "../result/result.model";
 
 const createOne = async (payload: {
   student: string;
@@ -17,19 +18,27 @@ const createOne = async (payload: {
   );
   const slug = `${student?.name.split(" ").join("-")}_class-${
     student?.class
-  }_will-conduct_${question?.name.split(" ").join("-")}_subject-${
-    question?.subject.split(" ").join("-")
-  }_exam-no-${Date.now()}`;
+  }_will-conduct_${question?.name
+    .split(" ")
+    .join("-")}_subject-${question?.subject
+    .split(" ")
+    .join("-")}_exam-no-${Date.now()}`;
 
   const result = examModel.create({ ...payload, slug });
   return result;
 };
 
 const findOne = async (slug: string) => {
-  const result = examModel
+  const result = await examModel
     .findOne({ slug })
     .populate("student")
     .populate("questionPapper");
+
+  if (result?.hasTaken) {
+    return await resultModel.findOne({
+      exam: new mongoose.Types.ObjectId(result._id),
+    }).populate({path:"exam",populate:[{path:"student"},{path:"questionPapper"}]});
+  }
   return result;
 };
 

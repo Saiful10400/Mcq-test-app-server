@@ -9,18 +9,23 @@ const resultSchema = new Schema<tResult>(
       required: true,
        
     },
+    student: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "auth",
+    },
     exam: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
       ref: "exam",
     },
     correctQuestionIndex: {
-      type: [Number],
+      type: [{index:Number,ans:String}],
       required: true,
        
     },
     incorrectQuestionIndex: {
-      type: [Number],
+      type: [{index:Number,ans:String}],
       required: true,
     },
     selectedAns:{

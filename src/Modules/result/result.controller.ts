@@ -13,8 +13,18 @@ const create = catchAsync(async (req: Request, res: Response) => {
       message: "Questions created.",
     });
   }); 
+  
+const leaderBoardRank = catchAsync(async (req: Request, res: Response) => {
+    const data = await resultService.leaderBoardRank();
+    sendResponse(res, {
+      data,
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "all ranking retrieved.",
+    });
+  }); 
 
 
 
-  const resultController={create}
+  const resultController={create,leaderBoardRank}
   export default resultController
