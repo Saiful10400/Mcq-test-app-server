@@ -15,10 +15,10 @@ const createOne = async (payload: {
   const question: tQuestionPapper | null = await questionPappersModel.findById(
     payload.questionPapper
   );
-  const slug = `${student?.name}_class-${
+  const slug = `${student?.name.split(" ").join("-")}_class-${
     student?.class
   }_will-conduct_${question?.name.split(" ").join("-")}_subject-${
-    question?.subject
+    question?.subject.split(" ").join("-")
   }_exam-no-${Date.now()}`;
 
   const result = examModel.create({ ...payload, slug });
