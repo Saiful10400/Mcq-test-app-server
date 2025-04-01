@@ -8,6 +8,11 @@ const examSchema = new Schema<tExam>(
       required: true,
       unique: true,
     },
+    hasTaken: {
+      type: Boolean,
+      required: false,
+      default:false
+    },
     student: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,

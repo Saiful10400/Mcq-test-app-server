@@ -37,7 +37,7 @@ const create = async (payload: {
   });
   // update exam collection.
   const examCollection = await examModel.findByIdAndUpdate(exam._id, {
-    result: correctQuestionIndex.length,
+    result: correctQuestionIndex.length,hasTaken:true
   });
   return { result, examCollection };
 };
