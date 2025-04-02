@@ -78,7 +78,7 @@ const leaderBoardRank = async () => {
     const correctAns=item.correctAnswers *1
     const incorrectAnswers=-item.incorrectAnswers*0.25
 
-    return{totalExam:item.totalExams,TotalMark:incorrectAnswers+correctAns+questionNotConducted,student:item.studentDetails}
+    return{totalExam:item.totalExams,TotalMark:(incorrectAnswers+correctAns+questionNotConducted).toFixed(2),student:item.studentDetails}
   })
 
 
