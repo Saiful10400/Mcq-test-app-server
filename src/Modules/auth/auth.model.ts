@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { tStudent } from "./auth.types";
- 
 
 const studentSchema = new Schema<tStudent>(
   {
@@ -8,16 +7,20 @@ const studentSchema = new Schema<tStudent>(
       type: String,
       required: true,
     },
+    image: {
+      type: String,
+      required: false,
+      default:null
+    },
     class: {
       type: Number,
       required: true,
     },
-    gender:{
-        type:String,
-        enum:["male","female"],
-        required:true,
-    }
-    
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

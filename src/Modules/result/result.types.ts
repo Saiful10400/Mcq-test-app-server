@@ -8,3 +8,28 @@ export type tResult={
     incorrectQuestionIndex:{index:number,ans:string}[];
     totalQuestion:number
 }
+
+
+
+
+type StudentDetails = {
+    _id: string;
+    name: string;
+    class: number;
+    gender: "male" | "female";
+    createdAt: string; // ISO date string
+    updatedAt: string; // ISO date string
+    __v: number;
+  };
+  
+  type StudentExamRecord = {
+    _id: string;
+    totalExams: number;
+    totalQuestions: number;
+    correctAnswers: number;
+    incorrectAnswers: number;
+    studentDetails: StudentDetails;
+  };
+  
+  export type tStudentRanks = StudentExamRecord[];
+  
