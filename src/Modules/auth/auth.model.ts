@@ -10,7 +10,7 @@ const studentSchema = new Schema<tStudent>(
     image: {
       type: String,
       required: false,
-      default:null
+      default:"https://i.ibb.co.com/8L64LVP0/default-avatar-profile-icon-vector-600nw-1745180411.webp"
     },
     class: {
       type: Number,
