@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import appError from "../../Errors/appError";
 import examModel from "../exam/exam.model";
 import { tExam } from "../exam/exam.types";
@@ -47,7 +48,7 @@ const create = async (payload: {
 };
 
 const leaderBoardRank = async () => {
-  const result:tStudentRanks = await resultModel.aggregate([
+  const result: tStudentRanks = await resultModel.aggregate([
     {
       $group: {
         _id: "$student",
@@ -66,26 +67,126 @@ const leaderBoardRank = async () => {
       },
     },
     {
-      "$unwind": "$studentDetails" // Unwind the student details array to get a single object
-    }
+      $unwind: "$studentDetails", // Unwind the student details array to get a single object
+    },
   ]);
-
 
   // correct= +1,  incorrect 4x=-1,  notCoduct 10x=-1
 
-  const data=result.map(item=>{
-    const questionNotConducted=-(item.totalQuestions-(item.correctAnswers+item.incorrectAnswers))/10
-    const correctAns=item.correctAnswers *1
-    const incorrectAnswers=-item.incorrectAnswers*0.25
+  const data = result.map((item) => {
+    const questionNotConducted =
+      -(item.totalQuestions - (item.correctAnswers + item.incorrectAnswers)) /
+      10;
+    const correctAns = item.correctAnswers * 1;
+    const incorrectAnswers = -item.incorrectAnswers * 0.25;
 
-    return{totalExam:item.totalExams,TotalMark:(incorrectAnswers+correctAns+questionNotConducted).toFixed(2),student:item.studentDetails}
-  })
-
-
-
+    return {
+      totalExam: item.totalExams,
+      TotalMark: (incorrectAnswers + correctAns + questionNotConducted).toFixed(
+        2
+      ),
+      student: item.studentDetails,
+    };
+  });
 
   return data;
 };
 
-const resultService = { create, leaderBoardRank };
+const aStudentAllResult = async (id: string) => {
+  // const result=await resultModel.find({student:new mongoose.Types.ObjectId(id)},{_id:1,exam:1,correctQuestion:{"$size":"$correctQuestionIndex"}}).populate("exam",{slug:0})
+  const result = await resultModel.aggregate([
+    { $match: { student: new mongoose.Types.ObjectId(id) } },
+    {
+      $project: {
+        exam: 1,
+        totalQuestion: 1,
+        correctQuestion: { $size: "$correctQuestionIndex" },
+        inCorrectQuestion: { $size: "$incorrectQuestionIndex" },
+        selectedAns: { $size: "$selectedAns" },
+      },
+    },
+
+    // calculation.
+    {
+      $addFields: {
+        result: {
+          $add: [
+            {
+              $divide: [{ $subtract: ["$totalQuestion", "$selectedAns"] }, -10],
+            },
+            {
+              $multiply: ["$correctQuestion", 1],
+            },
+            {
+              $divide: ["$inCorrectQuestion", -4],
+            },
+          ],
+        },
+      },
+    },
+
+    {
+      $lookup: {
+        from: "exams",
+        localField: "exam",
+        foreignField: "_id",
+        as: "exam",
+      },
+    },
+    {
+      $unwind: "$exam",
+    },
+
+    {
+      $lookup: {
+        from: "auths",
+        localField: "exam.student",
+        foreignField: "_id",
+        as: "student",
+      },
+    },
+    {
+      $unwind: "$student",
+    },
+    {
+      $addFields: {
+        slug: "$exam.slug",
+        studentName: "$student.name",
+        studentImage: "$student.image",
+        studentClass: "$student.class",
+      },
+    },
+
+    {
+      $project: {
+        exam: 0,
+        student: 0,
+        selectedAns: 0,
+        inCorrectQuestion: 0,
+        correctQuestion: 0,
+      },
+    },
+
+    // grouping.
+
+    {
+      $group: {
+        _id: {
+          name: "$studentName",
+          image: "$studentImage",
+          class: "$studentClass",
+        },
+        exams: {
+          $push: {
+            result: "$result",
+            routeSlug: "$slug",
+          },
+        },
+      },
+    },
+  ]);
+  return result;
+};
+
+const resultService = { create, leaderBoardRank, aStudentAllResult };
 export default resultService;

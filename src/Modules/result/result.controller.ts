@@ -24,7 +24,15 @@ const leaderBoardRank = catchAsync(async (req: Request, res: Response) => {
     });
   }); 
 
+  const aStudentAllResult = catchAsync(async (req: Request, res: Response) => {
+    const data = await resultService.aStudentAllResult(req.params.id);
+    sendResponse(res, {
+      data,
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "a student all result retrieved.",
+    });
+  }); 
 
-
-  const resultController={create,leaderBoardRank}
+  const resultController={create,leaderBoardRank,aStudentAllResult}
   export default resultController
