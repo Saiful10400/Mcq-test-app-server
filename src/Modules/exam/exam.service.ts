@@ -35,9 +35,14 @@ const findOne = async (slug: string) => {
     .populate("questionPapper");
 
   if (result?.hasTaken) {
-    return await resultModel.findOne({
-      exam: new mongoose.Types.ObjectId(result._id),
-    }).populate({path:"exam",populate:[{path:"student"},{path:"questionPapper"}]});
+    return await resultModel
+      .findOne({
+        exam: new mongoose.Types.ObjectId(result._id),
+      })
+      .populate({
+        path: "exam",
+        populate: [{ path: "student" }, { path: "questionPapper" }],
+      });
   }
   return result;
 };
@@ -50,6 +55,11 @@ const findAll = async () => {
   return result;
 };
 
-const examService = { createOne, findOne, findAll };
+const updateLInkVisit = async (id: string) => {
+  const result = await examModel.findByIdAndUpdate(id, { isLinkVisited: true });
+  return result;
+};
+
+const examService = { createOne, findOne, findAll, updateLInkVisit };
 
 export default examService;

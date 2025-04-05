@@ -13,6 +13,11 @@ const examSchema = new Schema<tExam>(
       required: false,
       default:false
     },
+    isLinkVisited: {
+      type: Boolean,
+      required: false,
+      default:false
+    },
     student: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
